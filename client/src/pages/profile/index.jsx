@@ -34,9 +34,9 @@ const Profile = () => {
     }
 
     if (userInfo.image) {
-      setImage(`${HOST}/${userInfo.image}`);
+      // setImage(`${HOST}/${userInfo.image}`);
+      setImage(userInfo.image);
     }
-
   }, [userInfo]);
 
   const validateProfile = () => {
@@ -88,34 +88,31 @@ const Profile = () => {
     if (file) {
       const formData = new FormData();
       formData.append("profile-image", file);
-      const respone = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData, {
+      const response = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData, {
         withCredentials: true,
       });
 
-      if (respone.status === 200 && respone.data.image) {
-        setUserInfo({ ...userInfo, image: respone.data.image });
+      if (response.status === 200 && response.data.image) {
+        setUserInfo({ ...userInfo, image: response.data.image });
         toast.success("Image updated successfully.");
       }
     }
   };
 
   const handleDeleteImage = async () => {
-
     try {
       const respone = await apiClient.delete(REMOVE_PROFILE_IMAGE_ROUTE, {
         withCredentials: true,
       });
-  
+
       if (respone.status === 200) {
         setUserInfo({ ...userInfo, image: null });
         toast.success("Image removed successfully.");
-        setImage(null)
+        setImage(null);
       }
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    
   };
 
   return (

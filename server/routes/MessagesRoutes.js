@@ -1,17 +1,19 @@
 import { Router } from "express";
 import { getMessages, uploadFile } from "../controllers/MessagesController.js";
 import { verifyToken } from "../middlewares/AuthMiddleware.js";
-import multer from "multer";
+import cloudinaryUpload from "../middlewares/cloudinaryUpload.js";
+
 
 const messagesRoutes = Router();
 
-const upload = multer({ dest: "uploads/file" });
+
 
 messagesRoutes.post("/get-messages", verifyToken, getMessages);
+
 messagesRoutes.post(
   "/upload-file",
   verifyToken,
-  upload.single("file"),
+  cloudinaryUpload.single("file"),
   uploadFile
 );
 

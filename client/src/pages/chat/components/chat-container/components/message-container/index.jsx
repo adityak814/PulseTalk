@@ -98,25 +98,41 @@ const MessageContainer = () => {
     });
   };
 
-  const downloadFile = async (url) => {
+  // const downloadFile = async (url) => {
+  //   setIsDownloading(true);
+  //   setFileDownloadProgress(0);
+  //   const response = await apiClient.get(url, {
+  //     responseType: "blob",
+  //     onDownloadProgress: (progressEvent) => {
+  //       const { loaded, total } = progressEvent;
+  //       const percentCompleted = Math.round((loaded * 100) / total);
+  //       setFileDownloadProgress(percentCompleted);
+  //     },
+  //   });
+  //   const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
+  //   const link = document.createElement("a");
+  //   link.href = urlBlob;
+  //   link.setAttribute("download", url.split("/").pop());
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   link.remove();
+  //   window.URL.revokeObjectURL(urlBlob);
+  //   setIsDownloading(false);
+  //   setFileDownloadProgress(0);
+  // };
+
+  const downloadFile = (url) => {
     setIsDownloading(true);
     setFileDownloadProgress(0);
-    const response = await apiClient.get(`${HOST}/${url}`, {
-      responseType: "blob",
-      onDownloadProgress: (progressEvent) => {
-        const { loaded, total } = progressEvent;
-        const percentCompleted = Math.round((loaded * 100) / total);
-        setFileDownloadProgress(percentCompleted);
-      },
-    });
-    const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
-    link.href = urlBlob;
-    link.setAttribute("download", url.split("/").pop());
+
+    const forceDownloadUrl = url.replace("/upload/", "/upload/fl_attachment/");
+
+    link.href = forceDownloadUrl;
+    link.setAttribute("download", forceDownloadUrl.split("/").pop());
     document.body.appendChild(link);
     link.click();
-    link.remove();
-    window.URL.revokeObjectURL(urlBlob);
+    document.body.removeChild(link);
     setIsDownloading(false);
     setFileDownloadProgress(0);
   };
@@ -156,7 +172,8 @@ const MessageContainer = () => {
                 }}
               >
                 <img
-                  src={`${HOST}/${message.fileUrl}`}
+                  // src={`${HOST}/${message.fileUrl}`}
+                  src={message.fileUrl}
                   height={300}
                   width={300}
                 />
@@ -220,7 +237,8 @@ const MessageContainer = () => {
                 }}
               >
                 <img
-                  src={`${HOST}/${message.fileUrl}`}
+                  // src={`${HOST}/${message.fileUrl}`}
+                  src={message.fileUrl}
                   height={300}
                   width={300}
                 />
@@ -247,7 +265,8 @@ const MessageContainer = () => {
             <Avatar className="h-8 w-8 rounded-full overflow-hidden">
               {message.sender.image && (
                 <AvatarImage
-                  src={`${HOST}/${message.sender.image}`}
+                  // src={`${HOST}/${message.sender.image}`}
+                  src={message.sender.image}
                   alt="/profile"
                   className="object-cover w-full h-full bg-black"
                 />
@@ -283,10 +302,7 @@ const MessageContainer = () => {
       {showImage && (
         <div className="fixed z=[1000] top-0 left-0 h-[100vh] w-[100vw] flex items-center justify-center backdrop-blur-lg">
           <div>
-            <img
-              src={`${HOST}/${imageURL}`}
-              className="h-[80vh] w-full bg-cover"
-            />
+            <img src={imageURL} className="h-[80vh] w-full bg-cover" />
           </div>
           <div className="flex gap-5 fixed top-0 mt-5 ">
             <button

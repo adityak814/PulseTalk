@@ -138,27 +138,46 @@ export const updateProfile = async (request, response, next) => {
   }
 };
 
-export const addProfileImage = async (request, response, next) => {
+// export const addProfileImage = async (request, response, next) => {
+//   try {
+//     if (!request.file) {
+//       return response.status(400).send("File is required.");
+//     }
+//     const date = Date.now();
+//     let fileName = "uploads/profiles/" + date + request.file.originalname;
+//     renameSync(request.file.path, fileName);
+
+//     const updatedUser = await User.findByIdAndUpdate(
+//       request.userId,
+//       { image: fileName },
+//       { new: true, runValidators: true }
+//     );
+
+//     return response.status(200).json({
+//       image: updatedUser.image,
+//     });
+//   } catch (error) {
+//     console.log({ error });
+//     return response.status(500).send("Internal Server Error.");
+//   }
+// };
+
+export const addProfileImage = async (req, res) => {
   try {
-    if (!request.file) {
-      return response.status(400).send("File is required.");
+    if (!req.file || !req.file.path) {
+      return res.status(400).send("Image is required.");
     }
-    const date = Date.now();
-    let fileName = "uploads/profiles/" + date + request.file.originalname;
-    renameSync(request.file.path, fileName);
 
     const updatedUser = await User.findByIdAndUpdate(
-      request.userId,
-      { image: fileName },
+      req.userId,
+      { image: req.file.path }, // Cloudinary returns secure_url as `path`
       { new: true, runValidators: true }
     );
 
-    return response.status(200).json({
-      image: updatedUser.image,
-    });
+    return res.status(200).json({ image: updatedUser.image });
   } catch (error) {
     console.log({ error });
-    return response.status(500).send("Internal Server Error.");
+    return res.status(500).send("Internal Server Error.");
   }
 };
 

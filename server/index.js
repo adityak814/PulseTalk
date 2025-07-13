@@ -8,6 +8,7 @@ import contactsRoutes from "./routes/ContactRoutes.js";
 import setupSocket from "./socket.js";
 import messagesRoutes from "./routes/MessagesRoutes.js";
 import channelRoutes from "./routes/ChannelRoutes.js";
+import connectCloudinary from "./configs/cloudinary.js";
 
 dotenv.config();
 
@@ -25,9 +26,15 @@ app.use(
 
 // app.use(cors());
 
-app.use("/uploads/profiles", express.static("uploads/profiles"));
-app.use("/uploads/files", express.static("uploads/files"));
+// app.use("/uploads/profiles", express.static("uploads/profiles"));
+// app.use("/uploads/files", express.static("uploads/files"));
 
+try {
+  await connectCloudinary();
+  console.log("Cloudinary configured successfully.");
+} catch (error) {
+  console.error("Cloudinary configuration failed:", error);
+}
 app.use(cookieParser());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
